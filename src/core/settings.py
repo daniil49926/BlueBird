@@ -15,6 +15,11 @@ def get_var(var_name: str) -> Optional[str | int]:
 
 
 class __Settings(BaseSettings):
+    HOST: str = get_var("APPLICATION_HOST")
+    PORT: int = get_var("APPLICATION_PORT")
+
+    RELOAD: bool = True
+    BASE_DIR: str = _BASE_DIR
 
     PG_HOST: str = get_var('PG_HOST')
     PG_PORT: int = get_var('PG_PORT_HOST')
@@ -22,6 +27,10 @@ class __Settings(BaseSettings):
     PG_PASSWORD: str = get_var('PG_PASSWORD')
     PG_MAIN_DB: str = get_var('PG_MAIN_DB')
     PG_DSN = f"{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_MAIN_DB}"
+
+    MAX_ATTEMPTS_TO_CONN_TO_PG: int = 5
+
+    TESTING: bool = get_var('TESTING')
 
 
 settings = __Settings()
