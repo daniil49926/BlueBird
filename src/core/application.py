@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from core.service.routers import router as core_router
 
-
 _app = None
 
 
