@@ -1,6 +1,4 @@
-
-from sqlalchemy import Column, Integer, String, ForeignKey
-
+from sqlalchemy import Column, ForeignKey, Integer, String
 
 from core.db.database import Base
 
@@ -15,5 +13,11 @@ class User(Base):
 class FollowersReferences(Base):
     __tablename__ = "FollowersReferences"
     id: int = Column(Integer, primary_key=True)
-    user_id: int = Column(ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE"), index=True, nullable=False)
-    follow: int = Column(ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
+    user_id: int = Column(
+        ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE"),
+        index=True,
+        nullable=False,
+    )
+    follow: int = Column(
+        ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE"), nullable=False
+    )
