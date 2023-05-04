@@ -1,6 +1,7 @@
 from sqlalchemy.future import select
-from apps.user.models import FollowersReferences, User
 from sqlalchemy.orm import aliased
+
+from apps.user.models import FollowersReferences, User
 
 
 async def get_user_by_key(session, api_key: str) -> User:
@@ -32,5 +33,5 @@ async def get_follower_and_following_by_user(session, user_in: User):
     follower = follower.all()
     return (
         [{"id": i[0], "name": i[1]} for i in following] if following else [],
-        [{"id": i[0], "name": i[1]} for i in follower] if follower else []
+        [{"id": i[0], "name": i[1]} for i in follower] if follower else [],
     )
