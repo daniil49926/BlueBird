@@ -10,6 +10,12 @@ async def get_user_by_key(session, api_key: str) -> User:
     return user.scalars().one_or_none()
 
 
+async def get_user_by_id(session, id_: int) -> User:
+    async with session.begin():
+        user = await session.execute(select(User).where(User.id == id_))
+    return user.scalars().one_or_none()
+
+
 async def get_follower_and_following_by_user(session, user_in: User):
     user_1 = aliased(User, name="User1")
     user_2 = aliased(User, name="User2")
