@@ -41,3 +41,29 @@ async def _get_follower_and_following_by_user(session, user_in: User):
         [{"id": i[0], "name": i[1]} for i in following] if following else [],
         [{"id": i[0], "name": i[1]} for i in follower] if follower else [],
     )
+
+
+async def checking_sub_capability(
+    following_uid: int, follower_uid: int, session
+) -> bool:
+    if following_uid == follower_uid:
+        return False
+    async with session.begin():
+        entry = await session.execute(
+            select(FollowersReferences).where(
+                FollowersReferences.id == following_uid,
+                FollowersReferences.follow == follower_uid,
+            )
+        )
+    return False if entry.scalars().one_or_none() else True
+
+
+async def _follow_user(following_uid: int, follower_uid: int, session) -> bool:
+    if not await checking_sub_capability(
+        following_uid=following_uid, follower_uid=follower_uid, session=session
+    ):
+        return False
+    new_entry = FollowersReferences(user_id=following_uid, follow=follower_uid)
+    async with session.begin():
+        session.add(new_entry)
+    return True
