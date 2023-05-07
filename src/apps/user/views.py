@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 
 from apps.user.utils import (
-    get_follower_and_following_by_user,
-    get_user_by_id,
-    get_user_by_key,
+    _get_follower_and_following_by_user,
+    _get_user_by_id,
+    _get_user_by_key,
 )
 from core.db.database import get_db
 
@@ -13,7 +13,7 @@ v1 = APIRouter()
 
 @v1.get(path="/me")
 async def get_me(api_key: str, session=Depends(get_db)) -> JSONResponse:
-    user = await get_user_by_key(session=session, api_key=api_key)
+    user = await _get_user_by_key(session=session, api_key=api_key)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -26,7 +26,7 @@ async def get_me(api_key: str, session=Depends(get_db)) -> JSONResponse:
     (
         response_following,
         response_follower,
-    ) = await get_follower_and_following_by_user(session=session, user_in=user)
+    ) = await _get_follower_and_following_by_user(session=session, user_in=user)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={
@@ -43,7 +43,7 @@ async def get_me(api_key: str, session=Depends(get_db)) -> JSONResponse:
 
 @v1.get("/{uid}")
 async def get_user(uid: int, api_key: str, session=Depends(get_db)) -> JSONResponse:
-    if not await get_user_by_key(session=session, api_key=api_key):
+    if not await _get_user_by_key(session=session, api_key=api_key):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
@@ -52,7 +52,7 @@ async def get_user(uid: int, api_key: str, session=Depends(get_db)) -> JSONRespo
                 "error_message": "Not authenticated",
             },
         )
-    user = await get_user_by_id(session=session, id_=uid)
+    user = await _get_user_by_id(session=session, id_=uid)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -62,7 +62,7 @@ async def get_user(uid: int, api_key: str, session=Depends(get_db)) -> JSONRespo
                 "error_message": "User not found",
             },
         )
-    response_following, response_follower = await get_follower_and_following_by_user(
+    response_following, response_follower = await _get_follower_and_following_by_user(
         session=session, user_in=user
     )
     return JSONResponse(
