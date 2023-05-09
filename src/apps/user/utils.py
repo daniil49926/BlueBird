@@ -1,3 +1,4 @@
+from sqlalchemy import delete
 from sqlalchemy.future import select
 from sqlalchemy.orm import aliased
 
@@ -51,7 +52,7 @@ async def checking_sub_capability(
     async with session.begin():
         entry = await session.execute(
             select(FollowersReferences).where(
-                FollowersReferences.id == following_uid,
+                FollowersReferences.user_id == following_uid,
                 FollowersReferences.follow == follower_uid,
             )
         )
@@ -67,3 +68,14 @@ async def _follow_user(following_uid: int, follower_uid: int, session) -> bool:
     async with session.begin():
         session.add(new_entry)
     return True
+
+
+async def _unfollow_user(following_uid: int, follower_uid: int, session) -> bool:
+    async with session.begin():
+        res = await session.execute(
+            delete(FollowersReferences).where(
+                FollowersReferences.user_id == following_uid,
+                FollowersReferences.follow == follower_uid,
+            )
+        )
+    return True if res.rowcount >= 1 else False

@@ -6,6 +6,7 @@ from apps.user.utils import (
     _get_follower_and_following_by_user,
     _get_user_by_id,
     _get_user_by_key,
+    _unfollow_user,
 )
 from core.db.database import get_db
 
@@ -106,6 +107,48 @@ async def follow_user(uid: int, api_key: str, session=Depends(get_db)) -> JSONRe
         following_uid=par_user.id, follower_uid=user.id, session=session
     )
     if not follow_result:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "result": "false",
+                "error_type": None,
+                "error_message": "Server error",
+            },
+        )
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"result": "true"},
+    )
+
+
+@v1.delete("/{uid}/follow")
+async def unfollow_user(
+    uid: int, api_key: str, session=Depends(get_db)
+) -> JSONResponse:
+    par_user = await _get_user_by_key(session=session, api_key=api_key)
+    if not par_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "result": "false",
+                "error_type": None,
+                "error_message": "Not authenticated",
+            },
+        )
+    user = await _get_user_by_id(session=session, id_=uid)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "result": "false",
+                "error_type": None,
+                "error_message": "User not found",
+            },
+        )
+    unfollow_result = await _unfollow_user(
+        following_uid=par_user.id, follower_uid=user.id, session=session
+    )
+    if not unfollow_result:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail={
