@@ -1,6 +1,6 @@
+from sqlalchemy import delete
 from sqlalchemy.future import select
 from sqlalchemy.orm import aliased
-from sqlalchemy import delete
 
 from apps.user.models import FollowersReferences, User
 
