@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Header, HTTPException, status
 from fastapi.responses import JSONResponse
 
 from apps.user.utils import (
@@ -14,7 +16,9 @@ v1 = APIRouter()
 
 
 @v1.get(path="/me")
-async def get_me(api_key: str, session=Depends(get_db)) -> JSONResponse:
+async def get_me(
+    api_key: Annotated[str | None, Header()], session=Depends(get_db)
+) -> JSONResponse:
     user = await _get_user_by_key(session=session, api_key=api_key)
     if not user:
         raise HTTPException(
@@ -44,7 +48,9 @@ async def get_me(api_key: str, session=Depends(get_db)) -> JSONResponse:
 
 
 @v1.get("/{uid}")
-async def get_user(uid: int, api_key: str, session=Depends(get_db)) -> JSONResponse:
+async def get_user(
+    uid: int, api_key: Annotated[str | None, Header()], session=Depends(get_db)
+) -> JSONResponse:
     if not await _get_user_by_key(session=session, api_key=api_key):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -82,7 +88,9 @@ async def get_user(uid: int, api_key: str, session=Depends(get_db)) -> JSONRespo
 
 
 @v1.post("/{uid}/follow")
-async def follow_user(uid: int, api_key: str, session=Depends(get_db)) -> JSONResponse:
+async def follow_user(
+    uid: int, api_key: Annotated[str | None, Header()], session=Depends(get_db)
+) -> JSONResponse:
     par_user = await _get_user_by_key(session=session, api_key=api_key)
     if not par_user:
         raise HTTPException(
@@ -123,7 +131,7 @@ async def follow_user(uid: int, api_key: str, session=Depends(get_db)) -> JSONRe
 
 @v1.delete("/{uid}/follow")
 async def unfollow_user(
-    uid: int, api_key: str, session=Depends(get_db)
+    uid: int, api_key: Annotated[str | None, Header()], session=Depends(get_db)
 ) -> JSONResponse:
     par_user = await _get_user_by_key(session=session, api_key=api_key)
     if not par_user:
