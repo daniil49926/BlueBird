@@ -44,4 +44,7 @@ async def load_medias(
         file=file,
     )
 
-    return JSONResponse(content={"result": True, "media_id": media_id}, status_code=200)
+    return JSONResponse(
+        content={"result": True, "media_id": media_id},
+        status_code=status.HTTP_201_CREATED,
+    )
