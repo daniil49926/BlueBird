@@ -13,4 +13,3 @@ class Media(Base):
         index=True,
         nullable=False,
     )
-    # tweet_id = Column("Tweet.id", ...)

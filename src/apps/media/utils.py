@@ -8,10 +8,10 @@ from core.settings import settings
 
 
 async def check_and_load_media(
-    session, background_task: BackgroundTasks, user_id: int, tweet_id: int, file: File
+    session, background_task: BackgroundTasks, user_id: int, file: File
 ) -> int:
     file_path_to_bd = (
-        f"/media/{user_id}_{tweet_id}_{uuid4()}.{file.filename.split('.')[-1]}"
+        f"/media/{user_id}_{uuid4()}.{file.filename.split('.')[-1]}"
     )
     file_abs_path = f"{settings.BASE_DIR}" + file_path_to_bd
 

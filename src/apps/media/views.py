@@ -40,7 +40,6 @@ async def load_medias(
         session=session,
         background_task=background_task,
         user_id=user.id,
-        tweet_id=1,
         file=file,
     )
 
