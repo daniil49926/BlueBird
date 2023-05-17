@@ -19,7 +19,12 @@ async def check_and_load_media(
         background_task.add_task(write_image, file_name=file_abs_path, file=file)
     else:
         raise HTTPException(
-            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, detail="It isn't png"
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail={
+                "result": "false",
+                "error_type": None,
+                "error_message": "It isn't png",
+            },
         )
     new_media = Media(
         media_path=file_path_to_bd,
