@@ -7,8 +7,8 @@ from apps.user.utils import (
     _follow_user,
     _get_follower_and_following_by_user,
     _get_user_by_id,
-    _get_user_by_key,
     _unfollow_user,
+    get_user_by_key,
 )
 from core.db.database import get_db
 
@@ -19,7 +19,7 @@ v1 = APIRouter()
 async def get_me(
     api_key: Annotated[str | None, Header()], session=Depends(get_db)
 ) -> JSONResponse:
-    user = await _get_user_by_key(session=session, api_key=api_key)
+    user = await get_user_by_key(session=session, api_key=api_key)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -51,7 +51,7 @@ async def get_me(
 async def get_user(
     uid: int, api_key: Annotated[str | None, Header()], session=Depends(get_db)
 ) -> JSONResponse:
-    if not await _get_user_by_key(session=session, api_key=api_key):
+    if not await get_user_by_key(session=session, api_key=api_key):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
@@ -91,7 +91,7 @@ async def get_user(
 async def follow_user(
     uid: int, api_key: Annotated[str | None, Header()], session=Depends(get_db)
 ) -> JSONResponse:
-    par_user = await _get_user_by_key(session=session, api_key=api_key)
+    par_user = await get_user_by_key(session=session, api_key=api_key)
     if not par_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -133,7 +133,7 @@ async def follow_user(
 async def unfollow_user(
     uid: int, api_key: Annotated[str | None, Header()], session=Depends(get_db)
 ) -> JSONResponse:
-    par_user = await _get_user_by_key(session=session, api_key=api_key)
+    par_user = await get_user_by_key(session=session, api_key=api_key)
     if not par_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
