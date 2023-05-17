@@ -7,8 +7,8 @@ from apps.user.utils import (
     _follow_user,
     _get_follower_and_following_by_user,
     _get_user_by_id,
-    get_user_by_key,
     _unfollow_user,
+    get_user_by_key,
 )
 from core.db.database import get_db
 
