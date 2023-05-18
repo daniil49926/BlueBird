@@ -16,6 +16,7 @@ class Tweet(Base):
 
 class TweetMediaReferences(Base):
     __tablename__ = "TweetMediaReferences"
+    id: int = Column(Integer, primary_key=True)
     tweet_id: int = Column(
         ForeignKey("Tweet.id", ondelete="CASCADE", onupdate="CASCADE"),
         index=True,
@@ -29,6 +30,7 @@ class TweetMediaReferences(Base):
 
 class TweetLikes(Base):
     __tablename__ = "TweetLikes"
+    id: int = Column(Integer, primary_key=True)
     tweet_id: int = Column(
         ForeignKey("Tweet.id", ondelete="CASCADE", onupdate="CASCADE"),
         index=True,
