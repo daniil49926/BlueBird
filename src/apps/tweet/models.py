@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, ForeignKey, Integer, String
 
 from core.db.database import Base
 
@@ -22,7 +22,8 @@ class TweetMediaReferences(Base):
         nullable=False,
     )
     media_id: int = Column(
-        ForeignKey("Media.media_id", ondelete="CASCADE", onupdate="CASCADE"), nullable=False
+        ForeignKey("Media.media_id", ondelete="CASCADE", onupdate="CASCADE"),
+        nullable=False,
     )
 
 
