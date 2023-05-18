@@ -40,8 +40,10 @@ async def load_medias(
         session=session,
         background_task=background_task,
         user_id=user.id,
-        tweet_id=1,
         file=file,
     )
 
-    return JSONResponse(content={"result": True, "media_id": media_id}, status_code=200)
+    return JSONResponse(
+        content={"result": True, "media_id": media_id},
+        status_code=status.HTTP_201_CREATED,
+    )

@@ -8,18 +8,21 @@ from core.settings import settings
 
 
 async def check_and_load_media(
-    session, background_task: BackgroundTasks, user_id: int, tweet_id: int, file: File
+    session, background_task: BackgroundTasks, user_id: int, file: File
 ) -> int:
-    file_path_to_bd = (
-        f"/media/{user_id}_{tweet_id}_{uuid4()}.{file.filename.split('.')[-1]}"
-    )
+    file_path_to_bd = f"/media/{user_id}_{uuid4()}.{file.filename.split('.')[-1]}"
     file_abs_path = f"{settings.BASE_DIR}" + file_path_to_bd
 
     if file.content_type == "image/png":
         background_task.add_task(write_image, file_name=file_abs_path, file=file)
     else:
         raise HTTPException(
-            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, detail="It isn't png"
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail={
+                "result": "false",
+                "error_type": None,
+                "error_message": "It isn't png",
+            },
         )
     new_media = Media(
         media_path=file_path_to_bd,

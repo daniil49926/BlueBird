@@ -124,7 +124,7 @@ async def follow_user(
             },
         )
     return JSONResponse(
-        status_code=status.HTTP_200_OK,
+        status_code=status.HTTP_201_CREATED,
         content={"result": "true"},
     )
 
