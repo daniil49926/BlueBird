@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 
 from apps.tweet.utils import (
     _create_tweet_and_ref,
+    _delete_tweet_and_all_ref,
     _like_tweet_with_uid,
     _unliked_tweet_with_uid,
 )
@@ -42,6 +43,40 @@ async def create_tweet(
         content={
             "result": "true",
             "tweet_id": tweet_id,
+        },
+    )
+
+
+@v1.delete("/{tid}")
+async def delete_tweet(
+    tid: int,
+    api_key: Annotated[str | None, Header()],
+    session=Depends(get_db),
+) -> JSONResponse:
+    user = await get_user_by_key(session=session, api_key=api_key)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "result": "false",
+                "error_type": None,
+                "error_message": "Not authenticated",
+            },
+        )
+    ok = await _delete_tweet_and_all_ref(session=session, tweet_id=tid, own_uid=user.id)
+    if not ok:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "result": "false",
+                "error_type": None,
+                "error_message": "Server error",
+            },
+        )
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "result": "true",
         },
     )
 
