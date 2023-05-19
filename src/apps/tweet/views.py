@@ -3,7 +3,7 @@ from typing import Annotated, Optional
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from fastapi.responses import JSONResponse
 
-from apps.tweet.utils import _create_tweet_and_ref
+from apps.tweet.utils import _create_tweet_and_ref, _like_tweet_with_uid
 from apps.user.utils import get_user_by_key
 from core.db.database import get_db
 
@@ -38,5 +38,30 @@ async def create_tweet(
         content={
             "result": "true",
             "tweet_id": tweet_id,
+        },
+    )
+
+
+@v1.post("/{tid}/likes")
+async def liked_tweet(
+    tid: int,
+    api_key: Annotated[str | None, Header()],
+    session=Depends(get_db),
+) -> JSONResponse:
+    user = await get_user_by_key(session=session, api_key=api_key)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "result": "false",
+                "error_type": None,
+                "error_message": "Not authenticated",
+            },
+        )
+    await _like_tweet_with_uid(session=session, own_uid=user.id, tweet_id=tid)
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "result": "true",
         },
     )
