@@ -35,7 +35,6 @@ async def _like_tweet_with_uid(
     own_uid,
     tweet_id,
 ) -> None:
-
     async with session.begin():
         tweet_exists = await session.execute(
             select(Tweet.id).where(Tweet.id == tweet_id)
@@ -49,9 +48,6 @@ async def _like_tweet_with_uid(
                 "error_message": "Tweet not found",
             },
         )
-    new_l = TweetLikes(
-        tweet_id=tweet_id,
-        user_id=own_uid
-    )
+    new_l = TweetLikes(tweet_id=tweet_id, user_id=own_uid)
     async with session.begin():
         session.add(new_l)
