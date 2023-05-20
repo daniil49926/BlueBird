@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 from aiofiles.os import path, remove
 from fastapi import HTTPException
@@ -125,3 +125,7 @@ async def _delete_tweet_and_all_ref(session, tweet_id: int, own_uid: int) -> boo
         )
         res = await session.execute(delete(Tweet).where(Tweet.id == tweet_id))
     return True if res.rowcount >= 1 else False
+
+
+async def _get_all_tweets(session) -> list[dict[Any]]:
+    pass
