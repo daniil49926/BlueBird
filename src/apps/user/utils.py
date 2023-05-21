@@ -1,3 +1,5 @@
+from typing import Any
+
 from sqlalchemy import delete
 from sqlalchemy.future import select
 from sqlalchemy.orm import aliased
@@ -17,7 +19,9 @@ async def _get_user_by_id(session, id_: int) -> User:
     return user.scalars().one_or_none()
 
 
-async def _get_follower_and_following_by_user(session, user_in: User):
+async def _get_follower_and_following_by_user(
+    session, user_in: User
+) -> tuple[list[dict[str, Any]], list[dict[str | Any]]]:
     user_1 = aliased(User, name="User1")
     user_2 = aliased(User, name="User2")
     async with session.begin():
