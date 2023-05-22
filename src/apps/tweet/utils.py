@@ -8,6 +8,7 @@ from starlette import status
 
 from apps.media.models import Media
 from apps.tweet.models import Tweet, TweetLikes, TweetMediaReferences
+from apps.user.models import User
 from core.settings import settings
 
 
@@ -128,4 +129,42 @@ async def _delete_tweet_and_all_ref(session, tweet_id: int, own_uid: int) -> boo
 
 
 async def _get_all_tweets(session) -> list[dict[Any]]:
-    pass
+    async with session.begin():
+        tweet_main_data = await session.execute(
+            select(Tweet, User).join(User, Tweet.author == User.id)
+        )
+    tweet_main_data = tweet_main_data.all()
+    tweet_ret_data = []
+    for i_tweet in tweet_main_data:
+        async with session.begin():
+            tweet_medias = await session.execute(
+                select(Media.media_path)
+                .join(
+                    TweetMediaReferences,
+                    TweetMediaReferences.media_id == Media.media_id,
+                )
+                .where(TweetMediaReferences.tweet_id == i_tweet.Tweet.id)
+            )
+        tweet_medias = [i[0] for i in tweet_medias.all()]
+        async with session.begin():
+            tweet_likes = await session.execute(
+                select(TweetLikes, User)
+                .join(User, User.id == TweetLikes.user_id)
+                .where(TweetLikes.tweet_id == i_tweet.Tweet.id)
+            )
+        tweet_likes = [
+            {"id": i.User.id, "name": i.User.name} for i in tweet_likes.all()
+        ]
+        tweet_ret_data.append(
+            {
+                "id": i_tweet.Tweet.id,
+                "content": i_tweet.Tweet.content,
+                "attachments": tweet_medias,
+                "author": {
+                    "id": i_tweet.User.id,
+                    "name": i_tweet.User.name,
+                },
+                "likes": tweet_likes,
+            }
+        )
+    return tweet_ret_data
