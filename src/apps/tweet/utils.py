@@ -139,7 +139,10 @@ async def _get_all_tweets(session) -> list[dict[Any]]:
         async with session.begin():
             tweet_medias = await session.execute(
                 select(Media.media_path)
-                .join(TweetMediaReferences, TweetMediaReferences.media_id == Media.media_id)
+                .join(
+                    TweetMediaReferences,
+                    TweetMediaReferences.media_id == Media.media_id,
+                )
                 .where(TweetMediaReferences.tweet_id == i_tweet.Tweet.id)
             )
         tweet_medias = [i[0] for i in tweet_medias.all()]
@@ -149,7 +152,9 @@ async def _get_all_tweets(session) -> list[dict[Any]]:
                 .join(User, User.id == TweetLikes.user_id)
                 .where(TweetLikes.tweet_id == i_tweet.Tweet.id)
             )
-        tweet_likes = [{"id": i.User.id, "name": i.User.name} for i in tweet_likes.all()]
+        tweet_likes = [
+            {"id": i.User.id, "name": i.User.name} for i in tweet_likes.all()
+        ]
         tweet_ret_data.append(
             {
                 "id": i_tweet.Tweet.id,
