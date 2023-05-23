@@ -170,12 +170,12 @@ async def _get_all_tweets(session) -> list[dict[Any]]:
     return tweet_ret_data
 
 
-async def _get_tweet(session, tid: int) -> list[dict[Any]]:
+async def _get_tweet_by_uid(session, uid: int) -> list[dict[Any]]:
     async with session.begin():
         tweet_main_data = await session.execute(
             select(Tweet, User)
             .join(User, Tweet.author == User.id)
-            .where(Tweet.id == tid)
+            .where(User.id == uid)
         )
     tweet_main_data = tweet_main_data.all()
     tweet_ret_data = []
