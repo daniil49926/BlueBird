@@ -1,3 +1,4 @@
+import os
 from uuid import uuid4
 
 import aiofiles
@@ -11,9 +12,10 @@ async def check_and_load_media(
     session, background_task: BackgroundTasks, user_id: int, file: File
 ) -> int:
     file_path_to_bd = f"/media/{user_id}_{uuid4()}.{file.filename.split('.')[-1]}"
-    file_abs_path = f"{settings.BASE_DIR}" + file_path_to_bd
+    p_path = os.path.dirname(settings.BASE_DIR)
+    file_abs_path = f"{p_path}" + "/static" + file_path_to_bd
 
-    if file.content_type == "image/png":
+    if file.content_type == "image/png" or file.content_type == "image/jpeg":
         background_task.add_task(write_image, file_name=file_abs_path, file=file)
     else:
         raise HTTPException(

@@ -1988,7 +1988,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "get",
-                                path: "/api/userinfo/"
+                                path: "http://127.0.0.1:8888/api/users/me"
                             }));
                         case 1:
                         case "end":
@@ -2009,7 +2009,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "get",
-                                path: "/api/userinfo/"
+                                path: "http://127.0.0.1:8888/api/users/me"
                             }));
                         case 1:
                         case "end":
@@ -2030,7 +2030,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "get",
-                                path: "/api/tweets"
+                                path: "http://127.0.0.1:8888/api/tweets"
                             }));
                         case 1:
                         case "end":
@@ -2051,7 +2051,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "get",
-                                path: "/api/tweets?offset=".concat(t, "&limit=").concat(n)
+                                path: "http://127.0.0.1:8888/api/tweets?offset=".concat(t, "&limit=").concat(n)
                             }));
                         case 1:
                         case "end":
@@ -2072,7 +2072,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "post",
-                                path: "/me",
+                                path: "http://127.0.0.1:8888/api/users/me",
                                 body: t
                             }));
                         case 1:
@@ -2094,7 +2094,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "post",
-                                path: "/api/tweets",
+                                path: "http://127.0.0.1:8888/api/tweets",
                                 body: t
                             }));
                         case 1:
@@ -2116,7 +2116,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "delete",
-                                path: "/api/tweets/".concat(t)
+                                path: "http://127.0.0.1:8888/api/tweets/".concat(t)
                             }));
                         case 1:
                         case "end":
@@ -2137,7 +2137,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "patch",
-                                path: "/tweets",
+                                path: "http://127.0.0.1:8888/api/tweets",
                                 body: t
                             }));
                         case 1:
@@ -2159,7 +2159,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "get",
-                                path: "/tweets/".concat(t.id)
+                                path: "http://127.0.0.1:8888/api/tweets/".concat(t.id)
                             }));
                         case 1:
                         case "end":
@@ -2180,7 +2180,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "put",
-                                path: "/me",
+                                path: "http://127.0.0.1:8888/api/users/me",
                                 body: t
                             }));
                         case 1:
@@ -2202,7 +2202,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "post",
-                                path: "/api/medias",
+                                path: "http://127.0.0.1:8888/api/medias",
                                 body: t
                             }));
                         case 1:
@@ -2224,7 +2224,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "post",
-                                path: "/api/tweets/".concat(t, "/likes")
+                                path: "http://127.0.0.1:8888/api/tweets/".concat(t, "/likes")
                             }));
                         case 1:
                         case "end":
@@ -2245,7 +2245,7 @@
                         case 0:
                             return e.abrupt("return", B({
                                 type: "delete",
-                                path: "/api/tweets/".concat(t, "/likes")
+                                path: "http://127.0.0.1:8888/api/tweets/".concat(t, "/likes")
                             }));
                         case 1:
                         case "end":

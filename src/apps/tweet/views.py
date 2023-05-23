@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from fastapi.responses import JSONResponse
@@ -7,6 +7,7 @@ from apps.tweet.utils import (
     _create_tweet_and_ref,
     _delete_tweet_and_all_ref,
     _get_all_tweets,
+    _get_tweet_by_uid,
     _like_tweet_with_uid,
     _unliked_tweet_with_uid,
 )
@@ -18,8 +19,7 @@ v1 = APIRouter()
 
 @v1.post("/")
 async def create_tweet(
-    tweet_data: str,
-    tweet_media_ids: Optional[list[int] | None],
+    tweet_data: dict,
     api_key: Annotated[str | None, Header()],
     session=Depends(get_db),
 ) -> JSONResponse:
@@ -33,10 +33,12 @@ async def create_tweet(
                 "error_message": "Not authenticated",
             },
         )
+    tweet_content = tweet_data.get("tweet_data")
+    tweet_media_ids = tweet_data.get("tweet_media_ids")
     tweet_id = await _create_tweet_and_ref(
         session=session,
         own_uid=user.id,
-        tweet_content=tweet_data,
+        tweet_content=tweet_content,
         tweet_media_ids=tweet_media_ids,
     )
     return JSONResponse(
@@ -79,6 +81,29 @@ async def delete_tweet(
         content={
             "result": "true",
         },
+    )
+
+
+@v1.get("/{uid}")
+async def get_tweet_by_uid(
+    uid: int,
+    api_key: Annotated[str | None, Header()],
+    session=Depends(get_db),
+) -> JSONResponse:
+    user = await get_user_by_key(session=session, api_key=api_key)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "result": "false",
+                "error_type": None,
+                "error_message": "Not authenticated",
+            },
+        )
+    tweet = await _get_tweet_by_uid(session=session, uid=uid)
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"result": "true", "tweets": tweet},
     )
 
 

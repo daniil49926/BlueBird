@@ -15,7 +15,7 @@ def get_app():
             CORSMiddleware,
             allow_origins=["*"],
             allow_credentials=True,
-            allow_methods=["GET", "POST"],
+            allow_methods=["GET", "POST", "DELETE"],
             allow_headers=["*"],
         )
         _app.include_router(core_router)
