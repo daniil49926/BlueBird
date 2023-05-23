@@ -7,6 +7,7 @@ from apps.tweet.utils import (
     _create_tweet_and_ref,
     _delete_tweet_and_all_ref,
     _get_all_tweets,
+    _get_tweet,
     _like_tweet_with_uid,
     _unliked_tweet_with_uid,
 )
@@ -79,6 +80,29 @@ async def delete_tweet(
         content={
             "result": "true",
         },
+    )
+
+
+@v1.get("/{tid}")
+async def get_tweet(
+    tid: int,
+    api_key: Annotated[str | None, Header()],
+    session=Depends(get_db),
+) -> JSONResponse:
+    user = await get_user_by_key(session=session, api_key=api_key)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "result": "false",
+                "error_type": None,
+                "error_message": "Not authenticated",
+            },
+        )
+    tweet = await _get_tweet(session=session, tid=tid)
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"result": "true", "tweets": tweet},
     )
 
 
