@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from fastapi.responses import JSONResponse
@@ -19,8 +19,7 @@ v1 = APIRouter()
 
 @v1.post("/")
 async def create_tweet(
-    tweet_data: str,
-    tweet_media_ids: Optional[list[int] | None],
+    tweet_data: dict,
     api_key: Annotated[str | None, Header()],
     session=Depends(get_db),
 ) -> JSONResponse:
@@ -34,10 +33,12 @@ async def create_tweet(
                 "error_message": "Not authenticated",
             },
         )
+    tweet_content = tweet_data.get("tweet_data")
+    tweet_media_ids = tweet_data.get("tweet_media_ids")
     tweet_id = await _create_tweet_and_ref(
         session=session,
         own_uid=user.id,
-        tweet_content=tweet_data,
+        tweet_content=tweet_content,
         tweet_media_ids=tweet_media_ids,
     )
     return JSONResponse(
