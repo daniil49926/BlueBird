@@ -1,3 +1,4 @@
+import os
 from typing import Any, Optional
 
 from aiofiles.os import path, remove
@@ -108,7 +109,8 @@ async def _delete_tweet_and_all_ref(session, tweet_id: int, own_uid: int) -> boo
         )
     medias_data = medias_data.all()
     if medias_data:
-        abs_media_path = [f"{settings.BASE_DIR}" + i[0] for i in medias_data]
+        p_path = os.path.dirname(settings.BASE_DIR)
+        abs_media_path = [f"{p_path}/static" + i[0] for i in medias_data]
         for i_path in abs_media_path:
             if await path.exists(path=i_path):
                 await remove(path=i_path)
