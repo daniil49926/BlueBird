@@ -1,4 +1,6 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+import datetime
+
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
 from core.db.database import Base
 
@@ -12,6 +14,7 @@ class Tweet(Base):
         index=True,
         nullable=False,
     )
+    _datetime: datetime.datetime = Column(DateTime)
 
 
 class TweetMediaReferences(Base):
