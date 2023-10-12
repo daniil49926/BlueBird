@@ -11,8 +11,9 @@ from apps.tweet.utils import (
     _like_tweet_with_uid,
     _unliked_tweet_with_uid,
 )
-from apps.user.utils import get_user_by_key
 from core.db.database import get_db
+from apps.auth.utils import get_current_active_user
+from apps.user.models import User
 
 v1 = APIRouter()
 
@@ -20,24 +21,14 @@ v1 = APIRouter()
 @v1.post("/")
 async def create_tweet(
     tweet_data: dict,
-    api_key: Annotated[str | None, Header()],
+    current_user: User = Depends(get_current_active_user),
     session=Depends(get_db),
 ) -> JSONResponse:
-    user = await get_user_by_key(session=session, api_key=api_key)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "result": "false",
-                "error_type": None,
-                "error_message": "Not authenticated",
-            },
-        )
     tweet_content = tweet_data.get("tweet_data")
     tweet_media_ids = tweet_data.get("tweet_media_ids")
     tweet_id = await _create_tweet_and_ref(
         session=session,
-        own_uid=user.id,
+        own_uid=current_user.id,
         tweet_content=tweet_content,
         tweet_media_ids=tweet_media_ids,
     )
@@ -53,20 +44,10 @@ async def create_tweet(
 @v1.delete("/{tid}")
 async def delete_tweet(
     tid: int,
-    api_key: Annotated[str | None, Header()],
+    current_user: User = Depends(get_current_active_user),
     session=Depends(get_db),
 ) -> JSONResponse:
-    user = await get_user_by_key(session=session, api_key=api_key)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "result": "false",
-                "error_type": None,
-                "error_message": "Not authenticated",
-            },
-        )
-    ok = await _delete_tweet_and_all_ref(session=session, tweet_id=tid, own_uid=user.id)
+    ok = await _delete_tweet_and_all_ref(session=session, tweet_id=tid, own_uid=current_user.id)
     if not ok:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -87,19 +68,9 @@ async def delete_tweet(
 @v1.get("/{uid}")
 async def get_tweet_by_uid(
     uid: int,
-    api_key: Annotated[str | None, Header()],
+    current_user: User = Depends(get_current_active_user),
     session=Depends(get_db),
 ) -> JSONResponse:
-    user = await get_user_by_key(session=session, api_key=api_key)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "result": "false",
-                "error_type": None,
-                "error_message": "Not authenticated",
-            },
-        )
     tweet = await _get_tweet_by_uid(session=session, uid=uid)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
@@ -110,20 +81,10 @@ async def get_tweet_by_uid(
 @v1.post("/{tid}/likes")
 async def liked_tweet(
     tid: int,
-    api_key: Annotated[str | None, Header()],
+    current_user: User = Depends(get_current_active_user),
     session=Depends(get_db),
 ) -> JSONResponse:
-    user = await get_user_by_key(session=session, api_key=api_key)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "result": "false",
-                "error_type": None,
-                "error_message": "Not authenticated",
-            },
-        )
-    await _like_tweet_with_uid(session=session, own_uid=user.id, tweet_id=tid)
+    await _like_tweet_with_uid(session=session, own_uid=current_user.id, tweet_id=tid)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={
@@ -135,20 +96,10 @@ async def liked_tweet(
 @v1.delete("/{tid}/likes")
 async def unliked_tweet(
     tid: int,
-    api_key: Annotated[str | None, Header()],
+    current_user: User = Depends(get_current_active_user),
     session=Depends(get_db),
 ) -> JSONResponse:
-    user = await get_user_by_key(session=session, api_key=api_key)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "result": "false",
-                "error_type": None,
-                "error_message": "Not authenticated",
-            },
-        )
-    ok = await _unliked_tweet_with_uid(session=session, own_uid=user.id, tweet_id=tid)
+    ok = await _unliked_tweet_with_uid(session=session, own_uid=current_user.id, tweet_id=tid)
     if not ok:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -166,19 +117,9 @@ async def unliked_tweet(
 
 @v1.get("/")
 async def get_tweets(
-    api_key: Annotated[str | None, Header()],
+    _: User = Depends(get_current_active_user),
     session=Depends(get_db),
 ) -> JSONResponse:
-    user = await get_user_by_key(session=session, api_key=api_key)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "result": "false",
-                "error_type": None,
-                "error_message": "Not authenticated",
-            },
-        )
     tweets = await _get_all_tweets(session=session)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
