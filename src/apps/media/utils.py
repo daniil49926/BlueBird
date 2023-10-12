@@ -2,6 +2,7 @@ import os
 from uuid import uuid4
 
 import aiofiles
+from aiofiles.os import makedirs, path
 from fastapi import BackgroundTasks, File, HTTPException, status
 
 from apps.media.models import Media
@@ -38,6 +39,9 @@ async def check_and_load_media(
 
 
 async def write_image(file_name: str, file: File) -> None:
+    head = "/".join(file_name.split("/")[0:-1])
+    if not await path.exists(head):
+        await makedirs(head)
     async with aiofiles.open(file_name, "wb") as buff:
         data = await file.read()
         await buff.write(data)
