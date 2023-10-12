@@ -1,7 +1,7 @@
 from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, UploadFile, status
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from apps.auth.utils import get_current_active_user
 from apps.media.utils import check_and_load_media, take_media
@@ -40,6 +40,5 @@ async def take_medias_on_path(
     if real_file_path:
         return FileResponse(real_file_path)
     return JSONResponse(
-        content={"result": False},
-        status_code=status.HTTP_404_NOT_FOUND
+        content={"result": False}, status_code=status.HTTP_404_NOT_FOUND
     )
