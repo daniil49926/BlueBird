@@ -1,0 +1,6 @@
+.idea/
+__pycache__/
+.github/
+.gitignore
+venv/
+README.md
