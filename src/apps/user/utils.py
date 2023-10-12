@@ -7,12 +7,6 @@ from sqlalchemy.orm import aliased
 from apps.user.models import FollowersReferences, User
 
 
-async def get_user_by_key(session, api_key: str) -> User:
-    async with session.begin():
-        user = await session.execute(select(User).where(User.api_key == api_key))
-    return user.scalars().one_or_none()
-
-
 async def _get_user_by_id(session, id_: int) -> User:
     async with session.begin():
         user = await session.execute(select(User).where(User.id == id_))
