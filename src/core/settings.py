@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 from core.utils.load_env import load_environ
 
@@ -27,7 +27,7 @@ class __Settings(BaseSettings):
     PG_USER: str = get_var("PG_USER")
     PG_PASSWORD: str = get_var("PG_PASSWORD")
     PG_MAIN_DB: str = get_var("PG_MAIN_DB")
-    PG_DSN = f"{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_MAIN_DB}"
+    PG_DSN: str = f"{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_MAIN_DB}"
 
     MAX_ATTEMPTS_TO_CONN_TO_PG: int = 5
 

@@ -10,7 +10,10 @@ from apps.user.utils import (
     _unfollow_user,
     get_user_by_key,
 )
+from apps.user.serializers import UserOut, UserIn, UserInDB
+from apps.user.models import User
 from core.db.database import get_db
+from core.security.auth_security import get_password_hash
 
 v1 = APIRouter()
 
@@ -45,6 +48,24 @@ async def get_me(
             },
         },
     )
+
+
+@v1.post("/users", response_model=UserOut)
+async def add_user(
+    user: UserIn, session: object = Depends(get_db)
+) -> User:
+    hash_pass = get_password_hash(user.password)
+    new_user = UserInDB(
+        name=user.name,
+        username=user.username,
+        email=user.email,
+        hashed_password=hash_pass,
+        is_active=1
+    )
+    user = User(**new_user.dict())
+    async with session.begin():
+        session.add(user)
+    return user
 
 
 @v1.get("/{uid}")
