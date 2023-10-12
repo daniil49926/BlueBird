@@ -1,8 +1,10 @@
+from typing import Any
+
 from fastapi import APIRouter, BackgroundTasks, Depends, File, UploadFile, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 
 from apps.auth.utils import get_current_active_user
-from apps.media.utils import check_and_load_media
+from apps.media.utils import check_and_load_media, take_media
 from apps.user.models import User
 from core.db.database import get_db
 
@@ -26,4 +28,18 @@ async def load_medias(
     return JSONResponse(
         content={"result": True, "media_id": media_id},
         status_code=status.HTTP_201_CREATED,
+    )
+
+
+@v1.get("/")
+async def take_medias_on_path(
+    file_path: str,
+    _: User = Depends(get_current_active_user),
+) -> Any:
+    real_file_path = await take_media(file_path)
+    if real_file_path:
+        return FileResponse(real_file_path)
+    return JSONResponse(
+        content={"result": False},
+        status_code=status.HTTP_404_NOT_FOUND
     )

@@ -1,4 +1,5 @@
 import os
+from typing import Any
 from uuid import uuid4
 
 import aiofiles
@@ -45,3 +46,11 @@ async def write_image(file_name: str, file: File) -> None:
     async with aiofiles.open(file_name, "wb") as buff:
         data = await file.read()
         await buff.write(data)
+
+
+async def take_media(media_path: str) -> Any:
+    p_path = os.path.dirname(settings.BASE_DIR)
+    media_path = f"{p_path}" + "/static" + media_path
+    if await path.isfile(media_path):
+        return media_path
+    return None
