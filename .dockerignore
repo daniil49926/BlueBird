@@ -1,0 +1,8 @@
+.idea/
+__pycache__/
+.github/
+.gitignore
+venv/
+README.md
+LICENSE.md
+.env.template

@@ -21,7 +21,7 @@ class __Settings(BaseSettings):
     RELOAD: bool = True
     BASE_DIR: str = _BASE_DIR
 
-    PG_HOST: str = get_var("PG_HOST")
+    PG_HOST: str = "pg_db"
     PG_PORT: int = get_var("PG_PORT_HOST")
     PG_USER: str = get_var("PG_USER")
     PG_PASSWORD: str = get_var("PG_PASSWORD")
