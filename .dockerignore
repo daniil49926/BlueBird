@@ -4,3 +4,5 @@ __pycache__/
 .gitignore
 venv/
 README.md
+LICENSE.md
+.env.template
