@@ -1,21 +1,10 @@
-from typing import Annotated
-
-from fastapi import (
-    APIRouter,
-    BackgroundTasks,
-    Depends,
-    File,
-    Header,
-    HTTPException,
-    UploadFile,
-    status,
-)
+from fastapi import APIRouter, BackgroundTasks, Depends, File, UploadFile, status
 from fastapi.responses import JSONResponse
 
-from apps.media.utils import check_and_load_media
-from core.db.database import get_db
-from apps.user.models import User
 from apps.auth.utils import get_current_active_user
+from apps.media.utils import check_and_load_media
+from apps.user.models import User
+from core.db.database import get_db
 
 v1 = APIRouter()
 

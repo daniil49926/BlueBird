@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
+from apps.auth.views import v1 as auth_v1
 from apps.media.views import v1 as media_v1
 from apps.tweet.views import v1 as tweet_v1
 from apps.user.views import v1 as user_v1
-from apps.auth.views import v1 as auth_v1
 
 router = APIRouter()
 

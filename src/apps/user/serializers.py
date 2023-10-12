@@ -20,6 +20,7 @@ class BaseUser(BaseModel):
             raise ValueError("Name or surname contains numbers")
         return v
 
+
 class UserInDB(BaseUser):
     hashed_password: str
     is_active: int

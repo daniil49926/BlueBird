@@ -1,8 +1,7 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, Header, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 
+from apps.auth.utils import get_current_active_user
 from apps.tweet.utils import (
     _create_tweet_and_ref,
     _delete_tweet_and_all_ref,
@@ -11,9 +10,8 @@ from apps.tweet.utils import (
     _like_tweet_with_uid,
     _unliked_tweet_with_uid,
 )
-from core.db.database import get_db
-from apps.auth.utils import get_current_active_user
 from apps.user.models import User
+from core.db.database import get_db
 
 v1 = APIRouter()
 
@@ -47,7 +45,9 @@ async def delete_tweet(
     current_user: User = Depends(get_current_active_user),
     session=Depends(get_db),
 ) -> JSONResponse:
-    ok = await _delete_tweet_and_all_ref(session=session, tweet_id=tid, own_uid=current_user.id)
+    ok = await _delete_tweet_and_all_ref(
+        session=session, tweet_id=tid, own_uid=current_user.id
+    )
     if not ok:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -68,7 +68,7 @@ async def delete_tweet(
 @v1.get("/{uid}")
 async def get_tweet_by_uid(
     uid: int,
-    current_user: User = Depends(get_current_active_user),
+    _: User = Depends(get_current_active_user),
     session=Depends(get_db),
 ) -> JSONResponse:
     tweet = await _get_tweet_by_uid(session=session, uid=uid)
@@ -99,7 +99,9 @@ async def unliked_tweet(
     current_user: User = Depends(get_current_active_user),
     session=Depends(get_db),
 ) -> JSONResponse:
-    ok = await _unliked_tweet_with_uid(session=session, own_uid=current_user.id, tweet_id=tid)
+    ok = await _unliked_tweet_with_uid(
+        session=session, own_uid=current_user.id, tweet_id=tid
+    )
     if not ok:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
