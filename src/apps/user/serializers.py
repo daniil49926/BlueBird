@@ -34,3 +34,15 @@ class UserOut(BaseUser):
     id: int
     created_at: datetime.datetime
     is_active: int
+
+
+class UserInMe(BaseModel):
+    id: int
+    name: str
+    followers: list
+    following: list
+
+
+class Me(BaseModel):
+    result: bool
+    user: UserInMe

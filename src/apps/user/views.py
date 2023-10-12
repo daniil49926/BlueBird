@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from apps.auth.utils import get_current_active_user
 from apps.user.models import User
-from apps.user.serializers import UserIn, UserInDB, UserOut
+from apps.user.serializers import Me, UserIn, UserInDB, UserOut
 from apps.user.utils import (
     _follow_user,
     _get_follower_and_following_by_user,
@@ -16,7 +16,7 @@ from core.security.auth_security import get_password_hash
 v1 = APIRouter()
 
 
-@v1.get(path="/me")
+@v1.get(path="/me", response_model=Me)
 async def get_me(
     current_user: User = Depends(get_current_active_user), session=Depends(get_db)
 ) -> JSONResponse:
@@ -55,7 +55,7 @@ async def add_user(user: UserIn, session: object = Depends(get_db)) -> User:
     return user
 
 
-@v1.get("/{uid}")
+@v1.get("/{uid}", response_model=Me)
 async def get_user(
     uid: int, _: User = Depends(get_current_active_user), session=Depends(get_db)
 ) -> JSONResponse:
