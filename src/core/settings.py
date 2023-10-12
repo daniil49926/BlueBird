@@ -22,6 +22,7 @@ class __Settings(BaseSettings):
     BASE_DIR: str = _BASE_DIR
 
     PG_HOST: str = "pg_db"
+    #PG_HOST: str = get_var("PG_HOST")
     PG_PORT: int = get_var("PG_PORT_HOST")
     PG_USER: str = get_var("PG_USER")
     PG_PASSWORD: str = get_var("PG_PASSWORD")
@@ -32,5 +33,8 @@ class __Settings(BaseSettings):
 
     TESTING: bool = get_var("TESTING")
 
+    CRYPTO_KEY: bytes = get_var("CRYPTO_KEY")
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 720
 
 settings = __Settings()
