@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 
@@ -18,17 +20,16 @@ v1 = APIRouter()
 
 @v1.post("/")
 async def create_tweet(
-    tweet_data: dict,
+    tweet_content: str,
+    tweet_medias_ids: Optional[list[int] | None],
     current_user: User = Depends(get_current_active_user),
     session=Depends(get_db),
 ) -> JSONResponse:
-    tweet_content = tweet_data.get("tweet_data")
-    tweet_media_ids = tweet_data.get("tweet_media_ids")
     tweet_id = await _create_tweet_and_ref(
         session=session,
         own_uid=current_user.id,
         tweet_content=tweet_content,
-        tweet_media_ids=tweet_media_ids,
+        tweet_media_ids=tweet_medias_ids,
     )
     return JSONResponse(
         status_code=status.HTTP_200_OK,
